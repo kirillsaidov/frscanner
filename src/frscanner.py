@@ -1,7 +1,15 @@
+# utilities
+import os
+from pathlib import Path
+
+# computer vision packages
 import cv2
 import numpy as np
 import face_recognition
 
+"""
+Returns frame width, height, fps
+"""
 def getVideoCaptureSettings(vcap):
     width = vcap.get(cv2.CAP_PROP_FRAME_WIDTH )
     height = vcap.get(cv2.CAP_PROP_FRAME_HEIGHT )
@@ -9,21 +17,45 @@ def getVideoCaptureSettings(vcap):
 
     return dict({'width': width, 'height': height, 'fps': fps})
 
+"""
+Loads face database
+
+Params:
+    imgs_folder = folder with face images (images should be named after person's name)
+
+Returns: known_face_encodings, known_face_names
+"""
+def loadFaceDatabase(imgs_folder):
+    # variables
+    known_face_encodings = []
+    known_face_names = []
+
+    for path in Path(imgs_folder).glob('*.png'):
+        face_image = face_recognition.load_image_file(path)
+        face_encoding = face_recognition.face_encodings(face_image)[0]
+
+        known_face_encodings.append(face_encoding)
+        known_face_names.append(os.path.basename(path).split('.')[0])
+
+    return known_face_encodings, known_face_names
+
 # get the first available video capture device
 video_capture = cv2.VideoCapture(0)
 
+known_face_encodings, known_face_names = loadFaceDatabase('../data')
+
 # kirill sample image
-kirill_image = face_recognition.load_image_file("../data/kirill.png")
-kirill_face_encoding = face_recognition.face_encodings(kirill_image)[0]
+# kirill_image = face_recognition.load_image_file("../data/kirill.png")
+# kirill_face_encoding = face_recognition.face_encodings(kirill_image)[0]
 
-# known faces lists
-known_face_encodings = [
-    kirill_face_encoding,
-]
+# # known faces lists
+# known_face_encodings = [
+#     kirill_face_encoding,
+# ]
 
-known_face_names = [
-    "Kirill",
-]
+# known_face_names = [
+#     "Kirill",
+# ]
 
 # Initialize some variables
 face_locations = []

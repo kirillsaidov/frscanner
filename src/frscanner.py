@@ -65,8 +65,9 @@ while True:
     process_frame = not process_frame
 
     # display results
-    ellipse_color = (0, 0, 255)
     cap_settings = getVideoCaptureSettings(video_capture)
+    ellipse_color = (0, 0, 255)
+    ellipse_size = (int(cap_settings['width']/6), int(cap_settings['height']/3.5))
     for (top, right, bottom, left), name in zip(face_locations, face_names):
         # scale back up face locations since the frame we detected was scaled to 1/4 size
         top *= 4
@@ -99,7 +100,6 @@ while True:
 
     # ellipse data
     ellipse_origin = (int(cap_settings['width']/2), int(cap_settings['height']/2))
-    ellipse_size = (int(cap_settings['width']/6), int(cap_settings['height']/3.5))
     
     # draw ellipse
     frame = cv2.ellipse(
